@@ -11,6 +11,13 @@ Python 2.7.10 (default, Jul 15 2017, 17:16:57)
 HTML 5.0
 IDE PyCharm
 
+Log
+----
+Dec 11,2017
+Total Number of Files Uploaded in Ver1 - 8 Nos
+    .py files (1) 
+    .html files (7)
+
 Exercises for Reference
 ------------------------
 1) A simple hello-world at http://localhost:8080/ that displays a simple string like "Hello World - Arpit"; replace "Arpit" with your own first name).
