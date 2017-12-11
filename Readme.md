@@ -1,7 +1,7 @@
 Python Flask Study
 This Repository is helpful for learning Python-Flask, NodeJs-Express.
 
-The programs are developed as part pf Hasura Internship 2017
+The programs are developed as part of Hasura Internship 2017
 InternshipWeek1.py contains python-flask routers for various exercises mentioned below.
 
 Development Environment
@@ -9,6 +9,7 @@ Development Environment
 Flask 0.12.2
 Python 2.7.10 (default, Jul 15 2017, 17:16:57)
 HTML 5.0
+IDE PyCharm
 
 Exercises for Reference
 ------------------------
