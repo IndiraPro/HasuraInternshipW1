@@ -13,10 +13,10 @@ IDE PyCharm
 
 Log
 ----
-Dec 11,2017
-Total Number of Files Uploaded in Ver1 - 8 Nos
+Dec 11,2017, Dec 12, 2017
+Total Number of Files Uploaded in Ver1 - 9 Nos
     .py files (1) 
-    .html files (7)
+    .html files (8)
 
 Exercises for Reference
 ------------------------
