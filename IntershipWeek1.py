@@ -1,5 +1,6 @@
 from flask import Flask, render_template, json, request, make_response, redirect, session, abort
 from random import randint
+import requests
 
 app = Flask(__name__)
 
@@ -15,10 +16,6 @@ def HelloWorld():
 @app.route("/Hello/<string:name>/")
 def Hello(name):
     return "Hello " + name + "!"
-
-@app.route("/authors")
-def FetchAuthors():
-    return 'Authors'
 
 
 # Form to enter Name, Age
@@ -37,8 +34,8 @@ def setmycookie():
     return resp
 
 # Display Cookies
-@app.route('/getcookie')
-def getcookie():
+@app.route('/getmycookie')
+def getmycookie():
    name = request.cookies['userID']
    age = request.cookies['userAGE']
    return '<h1>Welcome '+name+'. Your age is '+ age +' years </h1>'
@@ -85,6 +82,27 @@ def result():
    if request.method == 'POST':
       result = request.form
       return render_template("studentresult.html", result=result)
+
+@app.route('/authors')
+def authors():
+    data = requests.get('https://jsonplaceholder.typicode.com/users').json()
+    payload = {d['id']: {'name': d['name'], 'username': d['username'], 'email': d['email']} for d in data}
+    return render_template('viewauthors.html', payload=payload)
+
+@app.route('/posts')
+def posts():
+    posts = requests.get('https://jsonplaceholder.typicode.com/posts').json()
+    payload = {d['id']: {'userId': d['userId'], 'title': d['title']} for d in posts}
+    return render_template('viewauthors.html', payload=payload)
+
+@app.route('/count')
+def count():
+    data = requests.get('https://jsonplaceholder.typicode.com/users').json()
+    posts = requests.get('https://jsonplaceholder.typicode.com/posts').json()
+    payload = {d['id']: {'name': d['name'], 'count': 0} for d in data}
+    for post in posts:
+        payload[post['userId']]['count'] += 1
+    return render_template('viewauthors.html', payload=payload)
 
 if __name__ == "__main__":
     app.run()
