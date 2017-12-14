@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, json
 from random import randint
 import requests
 import os.path
@@ -126,10 +126,10 @@ def robotsview():
     statement2 = 'To Allow all Robots complete access: {User-agent: * , Disallow: }'
     statement3 = 'To Allow single Robot from the webserver: User-agent: Google Disallow: User-agent: * Disallow:/'
     statement4 = 'To Exclude single Robot from the webserver: User-agent: BadBot Disallow: /'
-    filepath = '/Users/indira_n/Sites/mypyfltest/templates/robots.txt'
-    if os.path.isfile(filepath):
+    filepath1 = '/Users/indira_n/Sites/mypyfltest/templates/robots.txt'
+    if os.path.isfile(filepath1):
         # file exists
-        lines1 = map(str.split, open('filepath'))
+        lines1 = map(str.split, open(filepath1))
         return render_template('robots.html', lines=lines1, statement1=statement1, statement2=statement2,
                                statement3=statement3, statement4=statement4)
 
