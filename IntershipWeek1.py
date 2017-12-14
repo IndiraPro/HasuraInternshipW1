@@ -1,9 +1,9 @@
 from flask import Flask, render_template, json, request, make_response, redirect, session, abort
 from random import randint
 import requests
+import urllib3
 
 app = Flask(__name__)
-
 
 @app.route("/")
 def index():
@@ -16,7 +16,6 @@ def HelloWorld():
 @app.route("/Hello/<string:name>/")
 def Hello(name):
     return "Hello " + name + "!"
-
 
 # Form to enter Name, Age
 @app.route('/setcookie', methods=['POST', 'GET'])
@@ -40,7 +39,7 @@ def getmycookie():
    age = request.cookies['userAGE']
    return '<h1>Welcome '+name+'. Your age is '+ age +' years </h1>'
 
-#Render HTML, Image
+
 # Show Random Quotes upon Reload
 @app.route("/Quotes")
 def Quotes():
@@ -103,6 +102,64 @@ def count():
     for post in posts:
         payload[post['userId']]['count'] += 1
     return render_template('viewauthors.html', payload=payload)
+
+
+@app.route('/robotsview')
+def robotsview():
+    #with open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt') as r1:
+    #print('fileopen')
+
+    statement1 = ''
+    lines1 = map(str.split, open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt'))
+
+    '''
+    for line in lines1:
+        if 'User-agent:' in line[0]:
+            if '*' in line[1]:
+                statement1 = 'All'
+            else:
+                statement1 = statement1 + line[1]
+
+    statement2 = ''
+    lines2 = map(str.split, open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt'))
+    for line in lines2:
+        if 'Disallow:' in line[0]:
+            statement2 = statement2
+
+
+    statement3 = ''
+    lines3 = map(str.split, open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt'))
+    for line in lines1:
+        if 'User-agent:' in line[0]:
+            if '*' in line[1]:
+                statement3 = ''
+            else:
+                statement3 = statement3 + line[1]
+        else:
+            if 'Disallow:' in line[0]:
+                if '/' == line[1]:
+                    statement3 = statement3 + line[1] + 'Disallowed'
+                else:
+                    if '' in line[1]:
+                        statement3 = statement3+ line[1] + 'Allowed'
+                    else:
+                        statement3 = statement3 + line[1] +'Disallowed'
+
+
+    '''
+    statement1 = 'To Exclude all Robots from the webserver: {User-agent: * , Disallow: /}'
+    statement2 = 'To Allow all Robots complete access: {User-agent: * , Disallow: }'
+    statement3 = 'To Allow single Robot from the webserver: User-agent: Google Disallow:  User-agent: * Disallow: /'
+    statement4 = 'To Exclude single Robot from the webserver: User-agent: BadBot Disallow: /'
+    return render_template('robots.html', lines=lines1, statement1=statement1, statement2=statement2, statement3=statement3, statement4=statement4)
+
+@app.route('/robotsdeny')
+def robotsdeny():
+    return'Robots Deny - Work in Progress'
+
+@app.route('/stdout')
+def stdout():
+    return'Post data - Work in Progress'
 
 if __name__ == "__main__":
     app.run()

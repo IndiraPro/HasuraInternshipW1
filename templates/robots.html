@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Typicode</title>
+
+</head>
+<body>
+<a href = "/">HOME</a><BR>
+<p></p>
+<p></p>
+<p></p>
+<table class="centered thick-border">
+    <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <p></p>
+    </tr>
+
+    {% for line in lines %}
+        <tr>
+        <td>{{ line[0] }}</td>
+        <td>{{ line[1] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<p></p>
+<p></p>
+
+<table class="centered thick-border">
+    <tr>
+        <p> <b>Notes:</b></p>
+        <p></p>
+    </tr>
+
+    <tr>
+        {{ statement1 }}
+        <p></p>
+    </tr>
+    <tr>
+        {{ statement2 }}
+        <p></p>
+    </tr>
+    <tr>
+        {{ statement3 }}
+        <p></p>
+    </tr>
+    <tr>
+        {{ statement4 }}
+        <p></p>
+    </tr>
+</table>
+
+</body>
+</html>
