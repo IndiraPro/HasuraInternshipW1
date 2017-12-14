@@ -1,26 +1,31 @@
-from flask import Flask, render_template, json, request, make_response, redirect, session, abort
+from flask import Flask, render_template, request, make_response
 from random import randint
 import requests
-import urllib3
+import os.path
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def index():
     return render_template('index.html')
 
-@app.route("/HelloWorld")
-def HelloWorld():
+
+@app.route("/helloworld")
+def helloworld():
     return "Hello World!"
 
-@app.route("/Hello/<string:name>/")
-def Hello(name):
+
+@app.route("/hello/<string:name>/")
+def hello(name):
     return "Hello " + name + "!"
+
 
 # Form to enter Name, Age
 @app.route('/setcookie', methods=['POST', 'GET'])
 def setcookieindex():
-   return render_template('cookieindex.html')
+    return render_template('cookieindex.html')
+
 
 # Set Cookies
 @app.route('/setmycookie', methods=['POST', 'GET'])
@@ -28,21 +33,25 @@ def setmycookie():
     name = request.form
     # Display 'Click here to Read Cookies'
     resp = make_response(render_template('readcookie.html', **locals()))
-    resp.set_cookie ('userID', name['nm'])
+    resp.set_cookie('userID', name['nm'])
     resp.set_cookie('userAGE', name['age'])
     return resp
+
 
 # Display Cookies
 @app.route('/getmycookie')
 def getmycookie():
-   name = request.cookies['userID']
-   age = request.cookies['userAGE']
-   return '<h1>Welcome '+name+'. Your age is '+ age +' years </h1>'
+    name = request.cookies.get('userID', None)
+    age = request.cookies.get('userAGE', None)
+    if name is None:
+        return '<h1>Welcome -- Your age is -- years </h1>'
+    else:
+        return '<h1>Welcome ' + name + '. Your age is ' + age + ' years </h1>'
 
 
 # Show Random Quotes upon Reload
-@app.route("/Quotes")
-def Quotes():
+@app.route("/quotes1")
+def quotes1():
     myname = 'User'
     quotes = [
         "'If people do not believe that mathematics is simple, it is only because they do not realize how complicated life is.' -- John Louis von Neumann ",
@@ -51,13 +60,14 @@ def Quotes():
         "'You look at things that are and ask, why? I dream of things that never were and ask, why not?' -- Unknown",
         "'Mathematics is the key and door to the sciences.' -- Galileo Galilei",
         "'Not everyone will understand your journey. Thats fine. Its not their journey to make sense of. Its yours.' -- Unknown"]
-    randomNumber1 = randint(0, len(quotes) - 1)
-    quote = quotes[randomNumber1]
+    randomnumber1 = randint(0, len(quotes) - 1)
+    quote = quotes[randomnumber1]
 
     return render_template('QuoteTemplate.html', **locals())
 
-@app.route("/Quotes/<string:myname>/")
-def Quotes_withname(myname):
+
+@app.route("/quotes_withname/<string:myname>/")
+def quotes_withname(myname):
     #    return name
     quotes = [
         "'If people do not believe that mathematics is simple, it is only because they do not realize how complicated life is.' -- John Louis von Neumann ",
@@ -66,21 +76,24 @@ def Quotes_withname(myname):
         "'You look at things that are and ask, why? I dream of things that never were and ask, why not?' -- Unknown",
         "'Mathematics is the key and door to the sciences.' -- Galileo Galilei",
         "'Not everyone will understand your journey. Thats fine. Its not their journey to make sense of. Its yours.' -- Unknown"]
-    randomNumber = randint(0, len(quotes) - 1)
-    quote = quotes[randomNumber]
+    randomnumber = randint(0, len(quotes) - 1)
+    quote = quotes[randomnumber]
 
     return render_template(
         'QuoteTemplate.html', **locals())
 
+
 @app.route('/student')
 def student():
-   return render_template('student.html')
+    return render_template('student.html')
 
-@app.route('/result',methods = ['POST', 'GET'])
+
+@app.route('/result', methods=['POST', 'GET'])
 def result():
-   if request.method == 'POST':
-      result = request.form
-      return render_template("studentresult.html", result=result)
+    if request.method == 'POST':
+        result1 = request.form
+        return render_template("studentresult.html", result=result1)
+
 
 @app.route('/authors')
 def authors():
@@ -88,78 +101,52 @@ def authors():
     payload = {d['id']: {'name': d['name'], 'username': d['username'], 'email': d['email']} for d in data}
     return render_template('viewauthors.html', payload=payload)
 
+
 @app.route('/posts')
 def posts():
-    posts = requests.get('https://jsonplaceholder.typicode.com/posts').json()
-    payload = {d['id']: {'userId': d['userId'], 'title': d['title']} for d in posts}
+    posts1 = requests.get('https://jsonplaceholder.typicode.com/posts').json()
+    payload = {d['id']: {'userId': d['userId'], 'title': d['title']} for d in posts1}
     return render_template('viewauthors.html', payload=payload)
+
 
 @app.route('/count')
 def count():
     data = requests.get('https://jsonplaceholder.typicode.com/users').json()
-    posts = requests.get('https://jsonplaceholder.typicode.com/posts').json()
+    posts1 = requests.get('https://jsonplaceholder.typicode.com/posts').json()
     payload = {d['id']: {'name': d['name'], 'count': 0} for d in data}
-    for post in posts:
+    for post in posts1:
         payload[post['userId']]['count'] += 1
     return render_template('viewauthors.html', payload=payload)
 
 
 @app.route('/robotsview')
 def robotsview():
-    #with open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt') as r1:
-    #print('fileopen')
 
-    statement1 = ''
-    lines1 = map(str.split, open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt'))
-
-    '''
-    for line in lines1:
-        if 'User-agent:' in line[0]:
-            if '*' in line[1]:
-                statement1 = 'All'
-            else:
-                statement1 = statement1 + line[1]
-
-    statement2 = ''
-    lines2 = map(str.split, open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt'))
-    for line in lines2:
-        if 'Disallow:' in line[0]:
-            statement2 = statement2
-
-
-    statement3 = ''
-    lines3 = map(str.split, open('/Users/indira_n/Sites/mypyfltest/templates/robots.txt'))
-    for line in lines1:
-        if 'User-agent:' in line[0]:
-            if '*' in line[1]:
-                statement3 = ''
-            else:
-                statement3 = statement3 + line[1]
-        else:
-            if 'Disallow:' in line[0]:
-                if '/' == line[1]:
-                    statement3 = statement3 + line[1] + 'Disallowed'
-                else:
-                    if '' in line[1]:
-                        statement3 = statement3+ line[1] + 'Allowed'
-                    else:
-                        statement3 = statement3 + line[1] +'Disallowed'
-
-
-    '''
     statement1 = 'To Exclude all Robots from the webserver: {User-agent: * , Disallow: /}'
     statement2 = 'To Allow all Robots complete access: {User-agent: * , Disallow: }'
-    statement3 = 'To Allow single Robot from the webserver: User-agent: Google Disallow:  User-agent: * Disallow: /'
+    statement3 = 'To Allow single Robot from the webserver: User-agent: Google Disallow: User-agent: * Disallow:/'
     statement4 = 'To Exclude single Robot from the webserver: User-agent: BadBot Disallow: /'
-    return render_template('robots.html', lines=lines1, statement1=statement1, statement2=statement2, statement3=statement3, statement4=statement4)
+    filepath = '/Users/indira_n/Sites/mypyfltest/templates/robots.txt'
+    if os.path.isfile(filepath):
+        # file exists
+        lines1 = map(str.split, open('filepath'))
+        return render_template('robots.html', lines=lines1, statement1=statement1, statement2=statement2,
+                               statement3=statement3, statement4=statement4)
+
+    else:
+        return render_template('robots.html', lines='', statement1=statement1, statement2=statement2,
+                               statement3=statement3, statement4=statement4)
+
 
 @app.route('/robotsdeny')
 def robotsdeny():
-    return'Robots Deny - Work in Progress'
+    return 'Robots Deny - Work in Progress'
+
 
 @app.route('/stdout')
 def stdout():
-    return'Post data - Work in Progress'
+    return 'Post data - Work in Progress'
+
 
 if __name__ == "__main__":
     app.run()
